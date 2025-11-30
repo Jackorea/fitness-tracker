@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Auth Section (Login/Signup) -->
+    <div id="auth-section" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>💪 Fitness Tracker</h1>
+                <p>Track your workouts, share your progress</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <form id="login-form-element">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+                    <div id="login-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="auth-toggle">
+                    Don't have an account? <a href="#" id="show-signup">Sign up</a>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="auth-form" style="display: none;">
+                <h2>Sign Up</h2>
+                <form id="signup-form-element">
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-confirm">Confirm Password</label>
+                        <input type="password" id="signup-password-confirm" required placeholder="••••••••">
+                    </div>
+                    <div id="signup-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+                <p class="auth-toggle">
+                    Already have an account? <a href="#" id="show-login">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Section -->
+    <div id="app-section" style="display: none;">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>💪 Fitness Tracker</h1>
+                </div>
+                <div class="nav-menu">
+                    <span id="user-email" class="user-info"></span>
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Tab Navigation -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="my-workouts">📝 Workouts</button>
+                <button class="tab-btn" data-tab="statistics">📊 Stats</button>
+                <button class="tab-btn" data-tab="calendar">📅 Calendar</button>
+                <button class="tab-btn" data-tab="personal-records">🏆 Records</button>
+                <button class="tab-btn" data-tab="templates">📋 Templates</button>
+                <button class="tab-btn" data-tab="create-workout">➕ Create</button>
+                <button class="tab-btn" data-tab="public-feed">🌐 Feed</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="container">
+            <!-- My Workouts Tab -->
+            <div id="my-workouts" class="tab-content active">
+                <div class="section-header">
+                    <h2>My Workouts</h2>
+                    <div class="search-box">
+                        <input type="text" id="workout-search" placeholder="🔍 Search workouts...">
+                    </div>
+                </div>
+                <div id="my-workouts-list" class="workouts-grid">
+                    <!-- Workouts will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="statistics" class="tab-content">
+                <h2>📊 Your Statistics</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏋️</div>
+                        <div class="stat-value" id="stat-total-workouts">0</div>
+                        <div class="stat-label">Total Workouts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💪</div>
+                        <div class="stat-value" id="stat-total-exercises">0</div>
+                        <div class="stat-label">Total Exercises</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚖️</div>
+                        <div class="stat-value" id="stat-total-volume">0 kg</div>
+                        <div class="stat-label">Total Volume</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value" id="stat-streak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Workout Frequency (Last 30 Days)</h3>
+                    <div id="frequency-chart" class="chart-container"></div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Volume Progress</h3>
+                    <div id="volume-chart" class="chart-container"></div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Most Frequent Exercises</h3>
+                    <div id="exercise-chart" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div id="calendar" class="tab-content">
+                <h2>📅 Workout Calendar</h2>
+                <div class="calendar-controls">
+                    <button id="prev-month" class="btn btn-secondary btn-sm">← Prev</button>
+                    <span id="current-month-year" class="calendar-title"></span>
+                    <button id="next-month" class="btn btn-secondary btn-sm">Next →</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Calendar will be rendered here -->
+                </div>
+                <div class="calendar-legend">
+                    <span class="legend-item"><span class="legend-dot has-workout"></span> Workout Day</span>
+                    <span class="legend-item"><span class="legend-dot today"></span> Today</span>
+                </div>
+            </div>
+
+            <!-- Personal Records Tab -->
+            <div id="personal-records" class="tab-content">
+                <h2>🏆 Personal Records</h2>
+                <div id="pr-list" class="pr-list">
+                    <!-- Personal records will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Templates Tab -->
+            <div id="templates" class="tab-content">
+                <h2>📋 Workout Templates</h2>
+                <p class="info-text">Save your favorite workouts as templates for quick access!</p>
+                <div class="template-actions">
+                    <button id="create-template-btn" class="btn btn-secondary">+ Create Template</button>
+                </div>
+                <div id="templates-list" class="templates-grid">
+                    <!-- Templates will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Create Workout Tab -->
+            <div id="create-workout" class="tab-content">
+                <h2>Create New Workout</h2>
+                
+                <!-- Rest Timer Widget -->
+                <div id="rest-timer" class="rest-timer" style="display: none;">
+                    <div class="timer-content">
+                        <div class="timer-display" id="timer-display">0:00</div>
+                        <div class="timer-controls">
+                            <button id="timer-pause" class="btn btn-secondary btn-sm">Pause</button>
+                            <button id="timer-reset" class="btn btn-secondary btn-sm">Reset</button>
+                            <button id="timer-close" class="btn btn-secondary btn-sm">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="create-workout-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="workout-title">Workout Title</label>
+                            <input type="text" id="workout-title" required placeholder="e.g., Morning Chest & Triceps">
+                        </div>
+                        <div class="form-group">
+                            <label for="workout-date">Date</label>
+                            <input type="date" id="workout-date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="workout-public">
+                            <span>Make this workout public</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="save-as-template">
+                            <span>Save as template</span>
+                        </label>
+                    </div>
+
+                    <div class="exercises-section">
+                        <h3>Exercises</h3>
+                        <div id="exercises-container">
+                            <!-- Exercises will be added here -->
+                        </div>
+                        <button type="button" id="add-exercise-btn" class="btn btn-secondary">+ Add Exercise</button>
+                    </div>
+
+                    <div id="create-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Create Workout</button>
+                </form>
+            </div>
+
+            <!-- Public Feed Tab -->
+            <div id="public-feed" class="tab-content">
+                <h2>Public Workouts Feed</h2>
+                <div id="public-workouts-list" class="workouts-grid">
+                    <!-- Public workouts will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workout Detail Modal -->
+    <div id="workout-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="workout-detail">
+                <!-- Workout details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Modal -->
+    <div id="template-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="template-modal-close">&times;</span>
+            <h2>Create Template</h2>
+            <form id="template-form">
+                <div class="form-group">
+                    <label for="template-name">Template Name</label>
+                    <input type="text" id="template-name" required placeholder="e.g., Push Day">
+                </div>
+                <div class="form-group">
+                    <label for="template-description">Description (optional)</label>
+                    <textarea id="template-description" rows="3" placeholder="Describe your template..."></textarea>
+                </div>
+                <div id="template-exercises-container">
+                    <!-- Template exercises will be added here -->
+                </div>
+                <button type="button" id="add-template-exercise-btn" class="btn btn-secondary">+ Add Exercise</button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save Template</button>
+                    <button type="button" id="cancel-template" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/stats.js"></script>
+    <script src="/static/js/calendar.js"></script>
+    <script src="/static/js/templates.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+
